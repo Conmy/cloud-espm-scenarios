@@ -12,6 +12,11 @@
 	<packaging>war</packaging>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.sap.espm</groupId>
+			<artifactId>espm-ui-reviews-jpa</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<!-- SAP HANA Cloud SDK dependencies -->
 		<dependency>
 			<groupId>com.sap.cloud</groupId>
@@ -42,6 +47,47 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.2</version>
 			<scope>provided</scope>
+		</dependency>
+	<!-- SAP OData dependencies -->
+		<dependency>
+			<groupId>org.apache.olingo</groupId>
+			<artifactId>olingo-odata2-api</artifactId>
+			<version>1.2.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.olingo</groupId>
+			<artifactId>olingo-odata2-core</artifactId>
+			<version>1.2.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.olingo</groupId>
+			<artifactId>olingo-odata2-jpa-processor-api</artifactId>
+			<version>1.2.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.olingo</groupId>
+			<artifactId>olingo-odata2-api-annotation</artifactId>
+			<version>1.2.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.olingo</groupId>
+			<artifactId>olingo-odata2-jpa-processor-core</artifactId>
+			<version>1.2.0</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-jaxrs</artifactId>
+			<version>2.7.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>eclipselink</artifactId>
+			<version>2.5.1</version>
 		</dependency>
 	</dependencies>
 
@@ -80,9 +126,6 @@
 						</goals>
 						<configuration>
 							<outputDirectory>${project.basedir}/src/main/webapp/WEB-INF/lib</outputDirectory>
-							<includeGroupIds>
-								com.sap.ui5.commons,com.sap.ui5.core,com.sap.ui5.makit,com.sap.ui5.mobile,com.sap.ui5.resource,com.sap.ui5.richtexteditor,com.sap.ui5.table,com.sap.ui5.themelib_sap_goldreflection,com.sap.ui5.themelib_sap_ux,com.sap.ui5.utils,com.sap.ui5.ux3,com.sap.ui5.visualization,com.sap.ui5.viz,com.sap.ui5.layout
-							</includeGroupIds>
 						</configuration>
 					</execution>
 					<execution>
@@ -123,5 +166,123 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<!-- Install local server from the P2 repository that is contained inside 
+			the SDK, deploy the built web application into it, start local server, wait 
+			for it and the built and deployed web application to become available, integration-test 
+			the web application on the local server, and stop the local server finally -->
+		<profile>
+			<id>local-reviews-integration-tests</id>
+			<activation>
+				<property>
+					<name>local.reviews.integration.tests</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<!-- Find free random ports for the local test server -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>build-helper-maven-plugin</artifactId>
+						<version>1.7</version>
+						<executions>
+							<execution>
+								<id>reserve-network-port</id>
+								<goals>
+									<goal>reserve-network-port</goal>
+								</goals>
+								<phase>validate</phase>
+								<configuration>
+									<portNames>
+										<portName>local.server.console.port</portName>
+										<portName>local.server.jmx.port</portName>
+										<portName>local.server.http.port</portName>
+										<portName>local.server.https.port</portName>
+										<portName>local.server.ajp.port</portName>
+									</portNames>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.7</version>
+						<executions>
+							<execution>
+								<id>prepare-local-server</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<target>
+
+										<exec dir="${sap.cloud.sdk.path}/tools" executable="${sap.cloud.console.shell}"
+											failonerror="true">
+											<arg
+												line="${sap.cloud.console.script} install-local --location ${local.server.root} --jmxPort ${local.server.jmx.port} --httpPort ${local.server.http.port} --httpsPort ${local.server.https.port} --ajpPort ${local.server.ajp.port} ${local.server.proxy.settings}" />
+										</exec>
+										<copy file="${project.build.directory}/${project.artifactId}.war"
+											todir="${local.server.root}/pickup" />
+										<copy
+											todir="${local.server.root}/config_master/service.destinations/destinations">
+											<fileset dir="${destinations.path}" />
+										</copy>
+										<exec dir="${sap.cloud.sdk.path}/tools" executable="${sap.cloud.console.shell}"
+											failonerror="true">
+											<arg
+												line="${sap.cloud.console.script} start-local --location ${local.server.root} --consolePort ${local.server.console.port} --waitUrl http://${local.server.host}:${local.server.http.port}/${project.artifactId}/ --waitUrlTimeout 120" />
+										</exec>
+									</target>
+								</configuration>
+							</execution>
+							<execution>
+								<id>cleanup-local-server</id>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<target>
+										<exec dir="${sap.cloud.sdk.path}/tools" executable="${sap.cloud.console.shell}"
+											failonerror="true">
+											<arg
+												line="${sap.cloud.console.script} stop-local --consolePort ${local.server.console.port}" />
+										</exec>
+									</target>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<version>2.14</version>
+						<executions>
+							<execution>
+								<id>execute-local-integration-tests</id>
+								<goals>
+									<goal>integration-test</goal>
+								</goals>
+								<configuration>
+									<argLine>${browser.proxy.settings}</argLine>
+									<systemPropertyVariables>
+										<integration.test.server.url>http://${local.server.host}:${local.server.http.port}</integration.test.server.url>
+										<webdriver.firefox.bin>${webdriver.firefox.bin}</webdriver.firefox.bin>
+									</systemPropertyVariables>
+								</configuration>
+							</execution>
+							<execution>
+								<id>verify-local-integration-tests</id>
+								<goals>
+									<goal>verify</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>

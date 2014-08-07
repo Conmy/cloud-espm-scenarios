@@ -35,6 +35,7 @@
 	<modules>
 		<module>espm-cloud-jpa</module>
 		<module>espm-cloud-web</module>
+		<module>espm-ui-reviews-jpa</module>
 		<module>espm-ui-reviews-web</module>
 	</modules>
 
