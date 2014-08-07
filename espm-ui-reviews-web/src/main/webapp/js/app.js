@@ -18,10 +18,6 @@ sap.app.odatamodel.setCountSupported(false);
 sap.app.odatamodel.refreshSecurityToken();
 sap.ui.getCore().setModel(sap.app.odatamodel);
 
-// get extension business data (reviews related data)
-sap.app.extensionodatamodel = new sap.ui.model.odata.ODataModel("proxy/cloudextensionbackend");
-sap.ui.getCore().setModel(sap.app.extensionodatamodel, "extensionodatamodel");
-
 // instantiate initial view
 sap.ui.localResources(sap.app.config.viewNamespace);
 sap.app.viewCache.get("main").placeAt("content");

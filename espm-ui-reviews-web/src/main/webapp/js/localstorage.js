@@ -42,7 +42,11 @@ sap.app.localStorage = {
 			var storedValue = localStorage.getItem(sKey);
 			if (storedValue) {
 				if (sKey == sap.app.localStorage.PREF_USED_BACKEND_TYPE) {
-					return storedValue;
+					// Due to a current bug in jpa OData processor retrieving data from Cloud backend does not work
+					// correctly so that we temporarily use only the ABAP backend (which is also the intended backend of
+					// the Extension scenarios)
+					return "abap";
+					// return storedValue;
 				} else if (sKey == sap.app.localStorage.PREF_DISPLAY_DATA_SOURCE_INFO) {
 					return (storedValue === 'true');
 				} else {

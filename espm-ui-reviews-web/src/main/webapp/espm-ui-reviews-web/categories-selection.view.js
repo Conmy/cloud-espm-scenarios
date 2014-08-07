@@ -1,9 +1,9 @@
-sap.ui.jsview("espm-ui-reviews-web.test-tab-2", {
+sap.ui.jsview("espm-ui-reviews-web.categories-selection", {
 
 	oCategoriesDropdownBox : null,
 
 	getControllerName : function() {
-		return "espm-ui-reviews-web.test-tab-2";
+		return "espm-ui-reviews-web.categories-selection";
 	},
 
 	createContent : function(oController) {
@@ -17,7 +17,7 @@ sap.ui.jsview("espm-ui-reviews-web.test-tab-2", {
 		});
 
 		var oCategoriesLabel = new sap.ui.commons.Label({
-			text : "{i18n>TEST_TAB_CATEGORIES_LABEL}"
+			text : "{i18n>CATEGORIES_LABEL}"
 		});
 
 		return new sap.ui.commons.layout.VerticalLayout({

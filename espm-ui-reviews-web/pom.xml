@@ -80,7 +80,30 @@
 						</goals>
 						<configuration>
 							<outputDirectory>${project.basedir}/src/main/webapp/WEB-INF/lib</outputDirectory>
-
+							<includeGroupIds>
+								com.sap.ui5.commons,com.sap.ui5.core,com.sap.ui5.makit,com.sap.ui5.mobile,com.sap.ui5.resource,com.sap.ui5.richtexteditor,com.sap.ui5.table,com.sap.ui5.themelib_sap_goldreflection,com.sap.ui5.themelib_sap_ux,com.sap.ui5.utils,com.sap.ui5.ux3,com.sap.ui5.visualization,com.sap.ui5.viz,com.sap.ui5.layout
+							</includeGroupIds>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-installed</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>${project.groupId}</groupId>
+									<artifactId>${project.artifactId}</artifactId>
+									<version>${project.version}</version>
+									<type>${project.packaging}</type>
+									<destFileName>espm-ui-reviews-web.war</destFileName>
+								</artifactItem>
+							</artifactItems>
+							<outputDirectory>${project.basedir}/../deploy</outputDirectory>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
 						</configuration>
 					</execution>
 					<execution>
