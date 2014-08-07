@@ -10,6 +10,7 @@ sap.ui.jsview("espm-ui-reviews-web.reviews", {
 		});
 
 		oReviewsViewLayout.createRow(this.getProductSelectionPanel());
+		oReviewsViewLayout.createRow(this.getWriteCustomerReviewCell(oController));
 
 		return oReviewsViewLayout;
 	},
@@ -76,4 +77,23 @@ sap.ui.jsview("espm-ui-reviews-web.reviews", {
 
 		return oProductSelectionPanel;
 	},
+
+	/**
+	 * Cell including the button to write a review.
+	 * 
+	 * @returns {sap.ui.commons.layout.MatrixLayoutCell}
+	 */
+	getWriteCustomerReviewCell : function(oController) {
+
+		var oButton = new sap.ui.commons.layout.MatrixLayoutCell({
+			hAlign : sap.ui.commons.layout.HAlign.Left,
+			content : [ new sap.ui.commons.Button({
+				id : "reviews-view-create-customer-review-button-id",
+				text : "{i18n>WRITE_CUSTOMER_REVIEW_BUTTON}",
+				press : oController.openCustomerReviewCreationDialog
+			}) ]
+		});
+
+		return oButton;
+	}
 });
