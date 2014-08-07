@@ -23,6 +23,8 @@ sap.ui.getCore().setModel(sap.app.odatamodel);
 sap.app.extensionodatamodel = new sap.ui.model.odata.ODataModel(sap.app.config.cloudExtensionOdataServiceName, true);
 // remote: odata service defined in destination with name 'cloudextensionbackend'
 // sap.app.extensionodatamodel = new sap.ui.model.odata.ODataModel("proxy/cloudextensionbackend");
+sap.app.extensionodatamodel.setCountSupported(false);
+sap.app.extensionodatamodel.attachRequestCompleted(sap.app.readExtensionOData.requestCompleted);
 sap.ui.getCore().setModel(sap.app.extensionodatamodel, "extensionodatamodel");
 
 // instantiate initial view

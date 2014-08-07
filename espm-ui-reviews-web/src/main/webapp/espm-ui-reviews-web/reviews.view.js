@@ -11,12 +11,14 @@ sap.ui.jsview("espm-ui-reviews-web.reviews", {
 
 		oReviewsViewLayout.createRow(this.getProductSelectionPanel());
 		oReviewsViewLayout.createRow(this.getWriteCustomerReviewCell(oController));
+		oReviewsViewLayout.createRow(this.getCustomerReviewsPanel());
 
 		return oReviewsViewLayout;
 	},
 
 	/**
-	 * Panel contains the capabilities to select a single product and displays corresponding products details.
+	 * Panel contains the capabilities to select a single product and displays corresponding products details. The
+	 * button on the panel opens a dialog from where a customer review can be created.
 	 * 
 	 * @returns {sap.ui.commons.Panel}
 	 */
@@ -95,5 +97,36 @@ sap.ui.jsview("espm-ui-reviews-web.reviews", {
 		});
 
 		return oButton;
+	},
+
+	/**
+	 * Panel contains the list of available customer reviews of the product which has been selected in the product
+	 * selection panel
+	 * 
+	 * @returns {sap.ui.commons.Panel}
+	 */
+	getCustomerReviewsPanel : function() {
+		var oProductReviewsListLayout = new sap.ui.commons.layout.MatrixLayout({
+			width : "100%",
+		});
+
+		oProductReviewsListLayout.createRow(new sap.ui.commons.layout.MatrixLayoutCell({
+			content : [ sap.app.viewCache.get("customer-reviews") ]
+		}));
+
+		var oCustomerReviewsPanel = new sap.ui.commons.Panel({
+			id : "reviews-view-customer-reviews-panel-id",
+			width : "100%",
+			areaDesign : sap.ui.commons.enums.AreaDesign.Plain,
+			borderDesign : sap.ui.commons.enums.BorderDesign.None,
+			showCollapseIcon : false,
+			content : [ oProductReviewsListLayout ],
+			title : new sap.ui.commons.Title({
+				text : "{i18n>REVIEWS_LIST_PANEL_TITLE}"
+			})
+		});
+
+		return oCustomerReviewsPanel;
 	}
+
 });

@@ -59,3 +59,46 @@ sap.app.utility = {
 	}
 
 };
+
+sap.app.readExtensionOData = {
+
+	requestCompleted : function(oEvent) {
+
+		var oExtensionODataModel = sap.ui.getCore().getModel("extensionodatamodel");
+		var oReviews = oExtensionODataModel.getProperty("/");
+		var sSelectedProductId = sap.app.viewCache.get("customer-reviews").getModel().getData()["selectedProductId"];
+		var oRatingInfo = sap.app.readExtensionOData.getRatingInfo(oReviews, sSelectedProductId);
+
+		// customer reviews exists
+		if (oRatingInfo.iReviewsCount > 0) {
+			// set average rating value
+			sap.app.viewCache.get("customer-reviews").getController().setRatingInfo(oRatingInfo);
+
+			sap.app.viewCache.get("reviews").getController().showFilledCustomerReviewsPanel();
+		} else {
+			sap.app.viewCache.get("reviews").getController().showEmptyCustomerReviewsPanel();
+		}
+	},
+
+	getRatingInfo : function(oReviews, sSelectedProductId) {
+		var iReviewsCount = 0;
+		var fRatingsSum = 0.0;
+		var fAverageRating = 0.0;
+
+		for ( var sReviewId in oReviews) {
+			var oReview = oReviews[sReviewId];
+			if (sSelectedProductId === oReview.ProductId) {
+				iReviewsCount++;
+				fRatingsSum += parseFloat(oReview.Rating);
+			}
+		}
+
+		if (iReviewsCount > 0) {
+			fAverageRating = fRatingsSum / iReviewsCount;
+		}
+		return {
+			iReviewsCount : iReviewsCount,
+			fAverageRating : fAverageRating
+		};
+	}
+};
