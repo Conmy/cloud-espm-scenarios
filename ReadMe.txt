@@ -27,7 +27,7 @@ Table of Contents
 1.1 How to import ESPM projects into Eclipse IDE
 ------------------------------------------------
 1. Make sure that you have installed a development environment as described in ESPM Scenarios Installation Guide
-   available on http://scn.sap.com/community/developer-center/cross-technology/content?filterID=content~objecttype~objecttype%5Bdocument%5D
+   available on http://scn.sap.com/docs/DOC-46868
    (chapter 1 and 2)
 
 1.2 How to build all ESPM projects
