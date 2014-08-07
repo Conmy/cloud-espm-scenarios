@@ -1,0 +1,1 @@
+sap.ui.controller("espm-ui-reviews-web.test-tab-1", {});

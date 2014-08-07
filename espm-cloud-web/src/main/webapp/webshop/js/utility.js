@@ -187,31 +187,14 @@ sap.app.readOdata = {
 		var that = this;
 
 		this.successResponse = function(oData, response) {
-
-			var prefBackendType = sap.app.localStorage.getPreference(sap.app.localStorage.PREF_USED_BACKEND_TYPE);
-			if (prefBackendType === sap.app.localStorage.PREF_USED_BACKEND_TYPE_ABAP) {
-				// abap service returns a single entity
-				if (response.statusCode == 200 && response.data.CustomerId) {
-					that.result = true;
-					sap.app.checkoutController.getView().getModel().setProperty("/customer", response.data);
-					sap.app.customerCreated = false;
-					sap.app.checkoutController.getView().getModel().setProperty("/payment/cardOwner",
-							response.data.FirstName + " " + response.data.LastName);
-				} else {
-					that.result = false;
-				}
+			if (response.statusCode == 200 && response.data.CustomerId) {
+				that.result = true;
+				sap.app.checkoutController.getView().getModel().setProperty("/customer", response.data);
+				sap.app.customerCreated = false;
+				sap.app.checkoutController.getView().getModel().setProperty("/payment/cardOwner",
+						response.data.FirstName + " " + response.data.LastName);
 			} else {
-				// java service returns a feed
-				if (response.statusCode == 200 && response.data.results.length > 0
-						&& response.data.results[0].CustomerId) {
-					that.result = true;
-					sap.app.checkoutController.getView().getModel().setProperty("/customer", response.data.results[0]);
-					sap.app.customerCreated = false;
-					sap.app.checkoutController.getView().getModel().setProperty("/payment/cardOwner",
-							response.data.results[0].FirstName + " " + response.data.results[0].LastName);
-				} else {
-					that.result = false;
-				}
+				that.result = false;
 			}
 		};
 	},
@@ -256,8 +239,7 @@ sap.app.readOdata = {
 
 	createCustomer : function(oData, response) {
 		if (response.statusCode == 201) {
-			sap.app.checkoutController.getView().getModel().setProperty("/customer/CustomerId",
-					response.data.CustomerId);
+			sap.app.checkoutController.getView().getModel().setProperty("/customer", response.data);
 			sap.app.checkoutController.getView().getModel().setProperty("/payment/cardOwner",
 					response.data.FirstName + " " + response.data.LastName);
 			// sap.app.checkoutController.getView().getModel().setProperty("/customer/created",true);
@@ -277,38 +259,29 @@ sap.app.readOdata = {
 			sap.app.checkoutController.getView().getModel().setProperty("/order", response.data);
 			var prefBackendType = sap.app.localStorage.getPreference(sap.app.localStorage.PREF_USED_BACKEND_TYPE);
 			if (!(prefBackendType === sap.app.localStorage.PREF_USED_BACKEND_TYPE_ABAP)) {
-				var soid = oData.SalesOrderId;
+				var results = oData.SalesOrderItems.results;
 				OData.request({
-					requestUri : oData.__metadata.uri + "/$links/Customer",
+					requestUri : oData.__metadata.id + "/$links/Customer",
 					method : "PUT",
 					data : {
-						"uri" : "Customers('" + oData.CustomerId + "')"
+						"uri" : "Customers('" + response.data.CustomerId + "')"
 					}
 				}, function(data, response1) {
+					// success handler
+					var length = results.length;
+					for ( var i = 0; i < length; i++) {
+						OData.request({
+							requestUri : results[i].__metadata.id + "/$links/Product",
+							method : "PUT",
+							data : {
+								"uri" : "Products('" + results[i].ProductId + "')"
+							}
+						}, function(data, response) {
 
-					OData.request({
-						requestUri : "/espm-cloud-web/espm.svc/GetSalesOrderItemsById?SalesOrderId='" + soid + "'",
-						method : "GET",
-					}, function(data, response) {
-						// success handler
-						var length = data.results.length;
-						for (var i = 0; i < length; i++) {
-							OData.request({
-								requestUri : data.results[i].__metadata.uri + "/$links/Product",
-								method : "PUT",
-								data : {
-									"uri" : "Products('" + data.results[i].ProductId + "')"
-								}
-							}, function(data, response) {
+						}, function(error, response) {
 
-							}, function(error, response) {
-
-							});
-						}
-					}, function(error, response) {
-
-					});
-
+						});
+					}
 				}, function(error, response) {
 
 				});

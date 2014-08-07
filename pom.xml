@@ -29,19 +29,13 @@
 
 		<!-- Property that holds the source path to the backend destinations -->
 		<destinations.path>${basedir}/../destinations</destinations.path>
-
-		<!-- Properties needed to reference sap OData -->
-		<sap.odata.version>0.7.0</sap.odata.version>
-		<sap.odata.processor.version>0.7.0</sap.odata.processor.version>
-		<!-- use 'com.sap.odata' when testing released version 0.6.0 -->
-		<sap.odata.groupId>com.sap.odata</sap.odata.groupId>
-
 		<m2e.jaxrs.activation>false</m2e.jaxrs.activation>
 	</properties>
 
 	<modules>
 		<module>espm-cloud-jpa</module>
 		<module>espm-cloud-web</module>
+		<module>espm-ui-reviews-web</module>
 	</modules>
 
 	<dependencies>
