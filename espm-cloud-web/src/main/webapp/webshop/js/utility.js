@@ -39,6 +39,26 @@ sap.app.utility = {
 		}
 	},
 
+	getBackendTypeText : function() {
+		var prefBackendType = sap.app.localStorage.getPreference(sap.app.localStorage.PREF_USED_BACKEND_TYPE);
+		if (prefBackendType === sap.app.localStorage.PREF_USED_BACKEND_TYPE_ABAP) {
+			return (sap.app.i18n.getProperty("DATA_SOURCE_INFO_ABAP_BACKEND"));
+		} else {
+			return (sap.app.i18n.getProperty("DATA_SOURCE_INFO_HANA_CLOUD"));
+		}
+	},
+
+	getDataSourceInfoOdataServiceUrl : function() {
+		var prefBackendType = sap.app.localStorage.getPreference(sap.app.localStorage.PREF_USED_BACKEND_TYPE);
+		if (prefBackendType === sap.app.localStorage.PREF_USED_BACKEND_TYPE_ABAP) {
+			return (sap.app.config.abapOdataServiceUrlWithLogin);
+		} else if (prefBackendType === sap.app.localStorage.PREF_USED_BACKEND_TYPE_CLOUD_REMOTE) {
+			return (sap.app.config.cloudOdataServiceUrl);
+		} else {
+			return (sap.app.config.cloudLocalOdataServiceUrl);
+		}
+	},
+
 	clearMessagesAfter : function(iMs) {
 		window.setTimeout(function() {
 			sap.app.messages.removeAllMessages();
@@ -179,6 +199,61 @@ sap.app.utility = {
 
 	},
 
+	showErrorMessage : function(sErrorMessage) {
+		var doShow = function() {
+			sap.ui.commons.MessageBox.alert(sErrorMessage);
+		};
+
+		if (sap.ui.getCore().isInitialized()) {
+			doShow();
+		} else {
+			sap.ui.getCore().attachInitEvent(doShow);
+		}
+	}
+
+};
+
+sap.app.readExtensionOData = {
+
+	requestCompleted : function(oEvent) {
+
+		var oExtensionODataModel = sap.ui.getCore().getModel("extensionodatamodel");
+		var oReviews = oExtensionODataModel.getProperty("/");
+		var sSelectedProductId = sap.app.viewCache.get("customer-reviews").getModel().getData()["selectedProductId"];
+		var oRatingInfo = sap.app.readExtensionOData.getRatingInfo(oReviews, sSelectedProductId);
+
+		// customer reviews exists
+		if (oRatingInfo.iReviewsCount > 0) {
+			// set average rating value
+			sap.app.viewCache.get("customer-reviews").getController().setRatingInfo(oRatingInfo);
+
+			sap.app.viewCache.get("reviews").getController().showFilledCustomerReviewsPanel();
+		} else {
+			sap.app.viewCache.get("reviews").getController().showEmptyCustomerReviewsPanel();
+		}
+	},
+
+	getRatingInfo : function(oReviews, sSelectedProductId) {
+		var iReviewsCount = 0;
+		var fRatingsSum = 0.0;
+		var fAverageRating = 0.0;
+
+		for ( var sReviewId in oReviews) {
+			var oReview = oReviews[sReviewId];
+			if (sSelectedProductId === oReview.ProductId) {
+				iReviewsCount++;
+				fRatingsSum += parseFloat(oReview.Rating);
+			}
+		}
+
+		if (iReviewsCount > 0) {
+			fAverageRating = fRatingsSum / iReviewsCount;
+		}
+		return {
+			iReviewsCount : iReviewsCount,
+			fAverageRating : fAverageRating
+		};
+	}
 };
 
 sap.app.readOdata = {
@@ -187,14 +262,31 @@ sap.app.readOdata = {
 		var that = this;
 
 		this.successResponse = function(oData, response) {
-			if (response.statusCode == 200 && response.data.CustomerId) {
-				that.result = true;
-				sap.app.checkoutController.getView().getModel().setProperty("/customer", response.data);
-				sap.app.customerCreated = false;
-				sap.app.checkoutController.getView().getModel().setProperty("/payment/cardOwner",
-						response.data.FirstName + " " + response.data.LastName);
+
+			var prefBackendType = sap.app.localStorage.getPreference(sap.app.localStorage.PREF_USED_BACKEND_TYPE);
+			if (prefBackendType === sap.app.localStorage.PREF_USED_BACKEND_TYPE_ABAP) {
+				// abap service returns a single entity
+				if (response.statusCode == 200 && response.data.CustomerId) {
+					that.result = true;
+					sap.app.checkoutController.getView().getModel().setProperty("/customer", response.data);
+					sap.app.customerCreated = false;
+					sap.app.checkoutController.getView().getModel().setProperty("/payment/cardOwner",
+							response.data.FirstName + " " + response.data.LastName);
+				} else {
+					that.result = false;
+				}
 			} else {
-				that.result = false;
+				// java service returns a feed
+				if (response.statusCode == 200 && response.data.results.length > 0
+						&& response.data.results[0].CustomerId) {
+					that.result = true;
+					sap.app.checkoutController.getView().getModel().setProperty("/customer", response.data.results[0]);
+					sap.app.customerCreated = false;
+					sap.app.checkoutController.getView().getModel().setProperty("/payment/cardOwner",
+							response.data.results[0].FirstName + " " + response.data.results[0].LastName);
+				} else {
+					that.result = false;
+				}
 			}
 		};
 	},
@@ -208,7 +300,7 @@ sap.app.readOdata = {
 		var oCategories = {};
 		var aCategories = [];
 
-		for ( var i = 0; i < oData.results.length; i++) {
+		for (var i = 0; i < oData.results.length; i++) {
 			var oCurrentCategory = oData.results[i];
 			// create main category if not existent
 			if (!oCategories[oCurrentCategory.MainCategory]) {
@@ -239,7 +331,8 @@ sap.app.readOdata = {
 
 	createCustomer : function(oData, response) {
 		if (response.statusCode == 201) {
-			sap.app.checkoutController.getView().getModel().setProperty("/customer", response.data);
+			sap.app.checkoutController.getView().getModel().setProperty("/customer/CustomerId",
+					response.data.CustomerId);
 			sap.app.checkoutController.getView().getModel().setProperty("/payment/cardOwner",
 					response.data.FirstName + " " + response.data.LastName);
 			// sap.app.checkoutController.getView().getModel().setProperty("/customer/created",true);
@@ -259,29 +352,38 @@ sap.app.readOdata = {
 			sap.app.checkoutController.getView().getModel().setProperty("/order", response.data);
 			var prefBackendType = sap.app.localStorage.getPreference(sap.app.localStorage.PREF_USED_BACKEND_TYPE);
 			if (!(prefBackendType === sap.app.localStorage.PREF_USED_BACKEND_TYPE_ABAP)) {
-				var results = oData.SalesOrderItems.results;
+				var soid = oData.SalesOrderId;
 				OData.request({
-					requestUri : oData.__metadata.id + "/$links/Customer",
+					requestUri : oData.__metadata.uri + "/$links/Customer",
 					method : "PUT",
 					data : {
-						"uri" : "Customers('" + response.data.CustomerId + "')"
+						"uri" : "Customers('" + oData.CustomerId + "')"
 					}
 				}, function(data, response1) {
-					// success handler
-					var length = results.length;
-					for ( var i = 0; i < length; i++) {
-						OData.request({
-							requestUri : results[i].__metadata.id + "/$links/Product",
-							method : "PUT",
-							data : {
-								"uri" : "Products('" + results[i].ProductId + "')"
-							}
-						}, function(data, response) {
 
-						}, function(error, response) {
+					OData.request({
+						requestUri : "/espm-cloud-web/espm.svc/GetSalesOrderItemsById?SalesOrderId='" + soid + "'",
+						method : "GET",
+					}, function(data, response) {
+						// success handler
+						var length = data.results.length;
+						for (var i = 0; i < length; i++) {
+							OData.request({
+								requestUri : data.results[i].__metadata.uri + "/$links/Product",
+								method : "PUT",
+								data : {
+									"uri" : "Products('" + data.results[i].ProductId + "')"
+								}
+							}, function(data, response) {
 
-						});
-					}
+							}, function(error, response) {
+
+							});
+						}
+					}, function(error, response) {
+
+					});
+
 				}, function(error, response) {
 
 				});

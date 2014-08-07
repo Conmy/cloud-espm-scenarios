@@ -9,6 +9,13 @@ sap.app.config = {
 	// If 'true' welcome dialog is displayed
 	displayWelcomeDialog : true,
 
+	// If 'true' data source information is displayed in 'Select a Product' area (Abap or HANA Cloud) and
+	// 'Customer reviews of selected product' area
+	displayDataSourceInfo : false,
+
+	// If 'true' Customer Reviews contents are displayed as a third tab
+	displayCustomerReview : false,
+
 	abapImagesBaseUrl : "",
 	cloudImagesBaseUrl : "/espm-cloud-web/images/",
 

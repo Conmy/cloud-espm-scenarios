@@ -46,6 +46,16 @@ sap.ui.controller("espm-ui-shopping-web.settings", {
 				oLocalCloudRadioButton.setSelected(true);
 			}
 		}
+
+		// display data source info
+		var oDisplayDataSourceInfoChkBox = sap.ui.getCore().byId("cloud-odata-display-data-source-info-chkbox-id");
+		oDisplayDataSourceInfoChkBox.setChecked(sap.app.localStorage
+				.getPreference(sap.app.localStorage.PREF_DISPLAY_DATA_SOURCE_INFO));
+
+		// display customer reviews
+		var oDisplayCustomerReviewsChkBox = sap.ui.getCore().byId("display-customer-reviews-chkbox-id");
+		oDisplayCustomerReviewsChkBox.setChecked(sap.app.localStorage
+				.getPreference(sap.app.localStorage.PREF_DISPLAY_CUSTOMER_REVIEWS));
 	},
 
 	save : function() {
@@ -65,6 +75,16 @@ sap.ui.controller("espm-ui-shopping-web.settings", {
 						sap.app.localStorage.PREF_USED_BACKEND_TYPE_ABAP);
 			}
 		}
+
+		// display data source info
+		var oDisplayDataSourceInfoChkBox = sap.ui.getCore().byId("cloud-odata-display-data-source-info-chkbox-id");
+		sap.app.localStorage.storePreference(sap.app.localStorage.PREF_DISPLAY_DATA_SOURCE_INFO,
+				oDisplayDataSourceInfoChkBox.getChecked());
+
+		// display customer reviews
+		var oDisplayCustomerReviewsChkBox = sap.ui.getCore().byId("display-customer-reviews-chkbox-id");
+		sap.app.localStorage.storePreference(sap.app.localStorage.PREF_DISPLAY_CUSTOMER_REVIEWS,
+				oDisplayCustomerReviewsChkBox.getChecked());
 	},
 
 	reloadPage : function() {

@@ -164,7 +164,9 @@ sap.ui.controller("espm-ui-shopping-web.checkout", {
 			SalesOrderHeader.SalesOrderItems = items;
 		}
 
-		sap.ui.getCore().getModel().create("/SalesOrderHeaders", SalesOrderHeader, null, sap.app.readOdata.createOrder,
+		var tempModel = new sap.ui.model.odata.ODataModel(sap.app.utility.getBackendDestination(), false);
+
+		tempModel.create("/SalesOrderHeaders", SalesOrderHeader, null, sap.app.readOdata.createOrder,
 				sap.app.readOdata.createOrderError);
 	},
 
