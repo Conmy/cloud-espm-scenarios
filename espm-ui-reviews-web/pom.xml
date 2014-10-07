@@ -120,15 +120,6 @@
 				<version>2.4</version>
 				<executions>
 					<execution>
-						<id>copy-dependencies</id>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.basedir}/src/main/webapp/WEB-INF/lib</outputDirectory>
-						</configuration>
-					</execution>
-					<execution>
 						<id>copy-installed</id>
 						<phase>install</phase>
 						<goals>
