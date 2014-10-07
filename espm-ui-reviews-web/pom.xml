@@ -72,19 +72,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<version>2.4</version>
-				<executions>
-					<execution>
-						<id>copy-dependencies</id>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.basedir}/src/main/webapp/WEB-INF/lib</outputDirectory>
-							<includeGroupIds>
-								com.sap.ui5.commons,com.sap.ui5.core,com.sap.ui5.makit,com.sap.ui5.mobile,com.sap.ui5.resource,com.sap.ui5.richtexteditor,com.sap.ui5.table,com.sap.ui5.themelib_sap_goldreflection,com.sap.ui5.themelib_sap_ux,com.sap.ui5.utils,com.sap.ui5.ux3,com.sap.ui5.visualization,com.sap.ui5.viz,com.sap.ui5.layout
-							</includeGroupIds>
-						</configuration>
-					</execution>
+				<executions>					
 					<execution>
 						<id>copy-installed</id>
 						<phase>install</phase>
@@ -104,19 +92,6 @@
 							<outputDirectory>${project.basedir}/../deploy</outputDirectory>
 							<overWriteReleases>true</overWriteReleases>
 							<overWriteSnapshots>true</overWriteSnapshots>
-						</configuration>
-					</execution>
-					<execution>
-						<id>unpack-dependencies</id>
-						<goals>
-							<goal>unpack-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}/test-classes</outputDirectory>
-							<includeGroupIds>
-								com.sap.ui5.core
-							</includeGroupIds>
-							<overWriteReleases>true</overWriteReleases>
 						</configuration>
 					</execution>
 				</executions>
