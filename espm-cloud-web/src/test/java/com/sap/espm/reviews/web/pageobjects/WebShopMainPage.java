@@ -7,6 +7,8 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.thoughtworks.selenium.webdriven.JavascriptLibrary;
+
 /**
  * Page object for customer reviews view
  */
@@ -40,6 +42,7 @@ public class WebShopMainPage extends PageObject {
 
 	@Override
 	protected boolean isCurrentPage() {
+		catListBodyDiv = driver.findElement(By.id("categories-list-body"));
 		return checkElementIsDisplayed(catListBodyDiv);
 	}
 
@@ -65,7 +68,10 @@ public class WebShopMainPage extends PageObject {
 	}
 
 	public CustomerReviewsPage navigateToReviews() {
-		reviewsWorksetItemLnk.click();
+		reviewsWorksetItemLnk = driver.findElement(By.id("nav-reviews"));
+		JavascriptLibrary jsLib = new JavascriptLibrary();
+		     jsLib.callEmbeddedSelenium(driver, "triggerMouseEventAt", reviewsWorksetItemLnk,
+		    "click", "1,1");
 		return CustomerReviewsPage.create(driver);
 	}
 
