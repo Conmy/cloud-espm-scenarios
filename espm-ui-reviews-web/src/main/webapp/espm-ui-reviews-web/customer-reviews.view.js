@@ -43,7 +43,7 @@ sap.ui.jsview("espm-ui-reviews-web.customer-reviews", {
 				wrapping : false,
 			}), new sap.ui.commons.Link({
 				text : "{i18n>DATA_SOURCE_INFO_EXT_LINK_TEXT}",
-				href : sap.app.config.cloudExtensionOdataServiceName,
+				href : sap.app.utility.getDomainURL() + sap.app.config.cloudExtensionOdataServiceName,
 				target : "_blank"
 			}), new sap.ui.commons.TextView({
 				text : ')',

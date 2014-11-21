@@ -59,7 +59,7 @@ sap.app.odatamodel.read("/ProductCategories", null, null, false, sap.app.readOda
 // get extension business data (reviews related data) from remote odata service as defined in destination with name
 // 'cloudextensionbackend'
 sap.app.extensionodatamodel = new sap.ui.model.odata.ODataModel("proxy/cloudextensionbackend", true);
-sap.app.extensionodatamodel.setCountSupported(false);
+sap.app.extensionodatamodel.setDefaultCountMode("none");
 sap.app.extensionodatamodel.attachRequestCompleted(sap.app.readExtensionOData.requestCompleted);
 sap.ui.getCore().setModel(sap.app.extensionodatamodel, "extensionodatamodel");
 

@@ -137,7 +137,7 @@ sap.ui.jsview("espm-ui-shopping-web.settings", {
 		}), new sap.ui.commons.layout.MatrixLayoutCell({
 			hAlign : sap.ui.commons.layout.HAlign.Right,
 			content : [ new sap.ui.commons.TextField({
-				value : sap.app.config.cloudLocalOdataServiceUrl,
+				value : sap.app.utility.getDomainURL() + sap.app.config.cloudLocalOdataServiceUrl,
 				width : "500px",
 				enabled : false
 			}) ]
@@ -151,7 +151,7 @@ sap.ui.jsview("espm-ui-shopping-web.settings", {
 			hAlign : sap.ui.commons.layout.HAlign.Right,
 			content : [ new sap.ui.commons.Link({
 				text : "{i18n>SETTINGS_TEST_URL_LINK_TEXT}",
-				href : sap.app.config.cloudLocalOdataServiceUrl,
+				href : sap.app.utility.getDomainURL() + sap.app.config.cloudLocalOdataServiceUrl,
 				target : "_blank"
 			}) ]
 		}));

@@ -321,7 +321,7 @@ same as for WebShop (see 2.1.2.1) but cloudextensionbackend has no effect as web
        Maven Run Configuration:
          - Goals: value depends on network proxy 
              i)  Network with proxy: 'verify -Dlocal.reviews.integration.tests' 
-             ii) Network without proxy: 'verify -Dlocal.reviews.integration.tests -D local.integration.tests -Dlocal.server.proxy.settings= -Dbrowser.proxy.settings=' 
+             ii) Network without proxy: 'verify -Dlocal.reviews.integration.tests -Dlocal.server.proxy.settings= -Dbrowser.proxy.settings=' 
          - Parameters:
            * [optional] integration.test.server.url: http://localhost:8080 (this is the default value)
            * [optional] integration.test.application.relpath: /espm-ui-reviews-web (this is the default value) 
