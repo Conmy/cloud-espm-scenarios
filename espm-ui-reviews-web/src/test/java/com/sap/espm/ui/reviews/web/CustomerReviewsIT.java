@@ -22,6 +22,13 @@ public class CustomerReviewsIT extends UiTestBase {
 	public void testCreateReviewWithAbapBackend() {
 		System.out.println("Opening page " + serverUrl + applicationPath);
 		driver.get(serverUrl + applicationPath);
+		
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		CustomerReviewsPage reviewsPage = CustomerReviewsPage.create(driver);
 
 		// ABAP backend system (default as defined in config.js)

@@ -93,6 +93,13 @@ public class EspmReviewsIT extends UiTestBase {
 		}
 
 		reviewsPage = reviewCreationPage.submitAndConfirmReview();
+		
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		assertEquals(3, reviewsPage.getFirstReviewRating());
 		assertTrue(reviewsPage.getFirstReviewComment().contains(reviewId));

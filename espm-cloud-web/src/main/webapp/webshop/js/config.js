@@ -20,7 +20,7 @@ sap.app.config = {
 	cloudImagesBaseUrl : "/espm-cloud-web/images/",
 
 	// backend details used in settings and for odata service Url links. Keep this data in sync destinations
-	cloudLocalOdataServiceUrl : window.location.origin + "/espm-cloud-web/espm.svc/",
+	cloudLocalOdataServiceUrl : "/espm-cloud-web/espm.svc/",
 	// see destinations/cloudbackend
 	cloudOdataServiceUrl : "https://cloudmodelespmhana.hana.ondemand.com/espm-cloud-web/espm.svc",
 	// see destinations/abapbackend
