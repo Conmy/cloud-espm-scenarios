@@ -209,6 +209,48 @@ sap.app.utility = {
 		} else {
 			sap.ui.getCore().attachInitEvent(doShow);
 		}
+	},
+	
+	getUrlVars :  function(){
+		var vars = [], hash;
+	    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+	 
+	    for(var i = 0; i < hashes.length; i++)
+	    {
+	        hash = hashes[i].split('=');
+	        vars.push(hash[0]);
+	        vars[hash[0]] = hash[1];
+	    }
+	 
+	    //console.log(vars["href"]);
+	    
+	    return vars;
+	},
+	
+	getDomainURL: function(){
+		
+		var tmp, domainPath;
+		var path = sap.app.utility.getUrlVars();
+		var indexPortalHtmlPath = path["href"];
+		
+		if(indexPortalHtmlPath !== undefined){
+			tmp = indexPortalHtmlPath.replace("%3A", ":");
+			tmp = tmp.replace('%2F%2F', '//');
+			tmp = tmp.replace('%2F', '/');
+			domainPath = tmp.split(".com")[0] + ".com";
+		}
+		else{
+			tmp = path[0];
+			if(tmp.indexOf(".com") == -1){
+				domainPath = tmp.split("/espm-cloud-web")[0];
+			}
+			else{
+			domainPath = tmp.split(".com")[0] + ".com";
+			}
+		}
+		
+		return domainPath;
+
 	}
 
 };

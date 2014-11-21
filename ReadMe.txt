@@ -27,7 +27,7 @@ Table of Contents
 1.1 How to import ESPM projects into Eclipse IDE
 ------------------------------------------------
 1. Make sure that you have installed a development environment as described in ESPM Scenarios Installation Guide
-   available on http://scn.sap.com/community/developer-center/cross-technology/content?filterID=content~objecttype~objecttype%5Bdocument%5D
+   available on http://scn.sap.com/docs/DOC-46868
    (chapter 1 and 2)
 
 1.2 How to build all ESPM projects
@@ -321,7 +321,7 @@ same as for WebShop (see 2.1.2.1) but cloudextensionbackend has no effect as web
        Maven Run Configuration:
          - Goals: value depends on network proxy 
              i)  Network with proxy: 'verify -Dlocal.reviews.integration.tests' 
-             ii) Network without proxy: 'verify -Dlocal.reviews.integration.tests -D local.integration.tests -Dlocal.server.proxy.settings= -Dbrowser.proxy.settings=' 
+             ii) Network without proxy: 'verify -Dlocal.reviews.integration.tests -Dlocal.server.proxy.settings= -Dbrowser.proxy.settings=' 
          - Parameters:
            * [optional] integration.test.server.url: http://localhost:8080 (this is the default value)
            * [optional] integration.test.application.relpath: /espm-ui-reviews-web (this is the default value) 

@@ -68,7 +68,7 @@ sap.ui.controller("espm-ui-reviews-web.settings", {
 
 	reloadPage : function() {
 		sap.ui.commons.MessageBox.alert(sap.app.i18n.getProperty("SETTINGS_STORED_SUCCESS_MSG"), function() {
-			window.location.reload();
+			window.top.location.reload();
 		});
 	},
 

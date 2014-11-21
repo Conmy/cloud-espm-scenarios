@@ -9,6 +9,7 @@
 		<version>0.3.0</version>
 	</parent>
 	<artifactId>espm-ui-reviews-jpa</artifactId>
+	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>

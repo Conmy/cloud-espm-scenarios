@@ -20,7 +20,7 @@ sap.app.config = {
 	// see destinations/cloudextensionbackend
 	cloudExtensionOdataServiceUrl : "https://webreviewsespmhana.hana.ondemand.com/espm-ui-reviews-web/espm.svc",
 	
-	cloudExtensionOdataServiceName : "espm.svc",
+	cloudExtensionOdataServiceName : "/espm-ui-reviews-web/espm.svc/",
 
 	// see destinations/cloudbackend
 	cloudOdataServiceUrl : "https://cloudmodelespmhana.hana.ondemand.com/espm-cloud-web/espm.svc",

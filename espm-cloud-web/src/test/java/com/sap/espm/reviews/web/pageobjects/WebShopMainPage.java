@@ -70,8 +70,8 @@ public class WebShopMainPage extends PageObject {
 	public CustomerReviewsPage navigateToReviews() {
 		reviewsWorksetItemLnk = driver.findElement(By.id("nav-reviews"));
 		JavascriptLibrary jsLib = new JavascriptLibrary();
-		     jsLib.callEmbeddedSelenium(driver, "triggerMouseEventAt", reviewsWorksetItemLnk,
-		    "click", "1,1");
+        jsLib.callEmbeddedSelenium(driver, "triggerMouseEventAt", reviewsWorksetItemLnk,
+		"click", "1,1");
 		return CustomerReviewsPage.create(driver);
 	}
 
