@@ -16,7 +16,16 @@
 				"name": "cloudbackendimages"
 		              },
             "description": "Cloud images backend"
-        } 
+        },
+        {
+                "path": "/resources",
+                "target": {
+                                "type": "service",
+                                "name": "sapui5",
+                                "entryPath": "/resources"
+                },
+                "description": "SAPUI5 Library"
+	}
     ],
     "cacheControl": [{        
    		"maxAge": 604800    
